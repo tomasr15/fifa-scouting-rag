@@ -1,5 +1,12 @@
 # Verificación de la entrega
 
+Actualización CSV del usuario: **30 pruebas aprobadas** (12,3 s). Se validaron
+20.421 fichas del snapshot FC 24, joins de técnicos, aislamiento entre versiones,
+ausencia de presupuestos inventados, filtros de posición secundaria/regate y la UI.
+La búsqueda Chroma se probó sobre una muestra de los CSV con embeddings reales.
+**No se construyó el índice completo de 20.421 fichas**: se genera al activar el
+buscador o ejecutar `main.py --dataset supplied --index-only`. La app queda detenida.
+
 Actualización de configuración LLM: **25 pruebas aprobadas**. Se verificó lectura
 de `.env`, prioridad del entorno y relectura de cambios sin guardar secretos en el
 entorno del proceso. Las 23 pruebas anteriores también siguen aprobadas.

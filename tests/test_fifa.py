@@ -74,6 +74,7 @@ class FifaTests(unittest.TestCase):
 
     def test_streamlit_real_search(self):
         app = AppTest.from_file(str(Path(__file__).resolve().parents[1] / 'app.py')).run(timeout=120)
+        next(x for x in app.selectbox if x.label == 'Dataset').select('FIFA real · Mundial de Clubes 2025').run(timeout=120)
         self.assertFalse(app.exception)
         next(b for b in app.button if b.label == 'Buscar evidencia FIFA').click().run(timeout=120)
         self.assertFalse(app.exception)

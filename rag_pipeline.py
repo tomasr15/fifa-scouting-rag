@@ -27,10 +27,16 @@ si ninguno cumple. No confundas mayor overall con mejor adecuación ni prometas
 titularidad. Separá los hechos del CSV de tus inferencias. No agregues otras entidades.
 Si entity_type es club o coach, analiza equipos o técnicos. Distingue fragmentos
 de una misma entidad; no los cuentes como candidatos diferentes. En el corpus FIFA
-los datos corresponden al Mundial de Clubes masculino 2025; las medias por aparición
+oficial los datos corresponden al Mundial de Clubes masculino 2025; las medias por aparición
 no son métricas por 90 minutos. Las estadísticas colectivas no prueban capacidades
 individuales del técnico. El premio por participación no es presupuesto de fichajes.
-Usá las referencias source_refs_json para sustentar el informe y preservá fechas."""
+Usá las referencias source_refs_json para sustentar el informe y preservá fechas.
+Si source_kind indica user CSV / FIFA-EA FC videogame, son valoraciones del videojuego
+y no estadísticas de partidos oficiales. Usa fifa_version y update_as_of del contexto;
+no atribuyas esos datos al Mundial de Clubes 2025. value_eur, wage_eur, club_worth_eur
+y transfer_budget_eur son valores del juego, no finanzas reales. No inventes importes
+ausentes. Los perfiles tácticos de técnicos se derivan del equipo asociado por ID,
+no prueban un estilo personal ni una relación laboral actual."""
 
 
 @dataclass(frozen=True)
@@ -76,7 +82,7 @@ def retrieval_summary(candidates: list[dict]) -> str:
             [f"**[J{i}] {c['metadata']['name']} · {c['metadata']['aspect']}**\n\n{c['document']}"
              for i, c in enumerate(candidates, 1)] +
             ["Los resultados son fragmentos; una entidad puede aparecer más de una vez. "
-             "No constituyen una recomendación generada ni una valoración permanente."])
+             "No constituyen una recomendación generada. Interpretá las métricas según la fuente y fecha indicadas."])
     lines = ["### Modo demostración: resumen sin LLM",
              "Candidatos ordenados por cercanía semántica a la consulta:"]
     for i, c in enumerate(candidates, 1):

@@ -9,6 +9,7 @@ chroma_db/
 .pytest_cache/
 data/fifa/raw/
 data/fifa/parsed/
+data/supplied/raw/
 *.log
 *.zip
 resultado*.json

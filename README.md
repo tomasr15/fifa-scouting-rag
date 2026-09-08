@@ -1,9 +1,15 @@
 # Buscador semántico y asistente de scouting
 
+**Dataset principal actualizado:** los tres CSV aportados (`male_players`,
+`male_teams`, `male_coaches`), edición FIFA/EA FC 24 del 22/9/2023: **18.350 jugadores,
+702 equipos y 1.369 técnicos**. [Guía de los nuevos CSV](SUPPLIED_DATASET.md).
+La aplicación arranca con el buscador inactivo y permite activar Chroma/MiniLM.
+Los datos oficiales FIFA 2025 descritos debajo siguen como modo alternativo.
+
 Repositorio: [tomasr15/fifa-scouting-rag](https://github.com/tomasr15/fifa-scouting-rag).
 Para configurar la API: [LLM_SETUP.md](LLM_SETUP.md). La clave se guarda en `.env` local.
 
-Prototipo universitario de RAG en Python. Abre por defecto el **Mundial de Clubes
+Prototipo universitario de RAG en Python. Incluye como alternativa el **Mundial de Clubes
 FIFA masculino 2025**: 1.000 jugadores, 32 clubes, 32 técnicos y 63 partidos de fuentes
 oficiales, transformados en 2.452 fragmentos vectoriales. Incluye estadísticas,
 táctica y contexto económico del premio de participación. [Guía del dataset real,
@@ -24,7 +30,7 @@ Desde esta carpeta, en Windows PowerShell:
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe main.py --dataset fifa --index-only
+.\.venv\Scripts\python.exe main.py --dataset supplied --index-only
 .\.venv\Scripts\python.exe -m streamlit run app.py
 ```
 
@@ -37,11 +43,13 @@ Linux/macOS:
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python main.py --dataset fifa --index-only
+.venv/bin/python main.py --dataset supplied --index-only
 .venv/bin/python -m streamlit run app.py
 ```
 
 El modo predeterminado **Sin LLM** permite demostrar toda la recuperación sin claves.
+En el modo CSV del usuario, primero activar el buscador local. La indexación previa
+por CLI es opcional y carga MiniLM mientras se ejecuta; al terminar, el proceso sale.
 Su resumen es determinista y está etiquetado; para el RAG completo configurar uno de
 los siguientes generadores y seleccionarlo en la barra lateral.
 
@@ -89,11 +97,14 @@ los candidatos y muestra un aviso; no se presenta el resumen como salida de un L
 
 ## CLI y ejemplos para la exposición
 
+Estos ejemplos corresponden al modo sintético. Para los CSV nuevos usar
+`--dataset supplied`, posiciones ST/CM/CB/etc. y la [guía actualizada](SUPPLIED_DATASET.md).
+
 ```powershell
-.\.venv\Scripts\python.exe main.py --query "Volante mixto con despliegue físico y buen pase largo" --league "La Liga" --max-age 27 --position MC -k 3 --output resultado.json
-.\.venv\Scripts\python.exe main.py --query "Central rápido para defender con línea alta" --max-age 25 --provider ollama
-.\.venv\Scripts\python.exe main.py --query "Delantero de área potente y goleador" --provider openai
-.\.venv\Scripts\python.exe main.py
+.\.venv\Scripts\python.exe main.py --dataset mock --query "Volante mixto con despliegue físico y buen pase largo" --league "La Liga" --max-age 27 --position MC -k 3 --output resultado.json
+.\.venv\Scripts\python.exe main.py --dataset mock --query "Central rápido para defender con línea alta" --max-age 25 --provider ollama
+.\.venv\Scripts\python.exe main.py --dataset mock --query "Delantero de área potente y goleador" --provider openai
+.\.venv\Scripts\python.exe main.py --dataset mock
 ```
 
 El último comando abre un bucle interactivo; Enter vacío o Ctrl+C termina.

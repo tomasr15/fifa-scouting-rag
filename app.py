@@ -10,7 +10,11 @@ from rag_pipeline import LLMConfig, run_scouting
 from vector_store import PlayerVectorStore, build_filter
 
 st.set_page_config(page_title="Scouting semántico", page_icon="⚽", layout="wide")
-dataset_mode = st.sidebar.selectbox("Dataset", ["FIFA real · Mundial de Clubes 2025", "Demo sintética · 30 jugadores"])
+dataset_mode = st.sidebar.selectbox("Dataset", ["CSV del usuario · FIFA/EA FC", "FIFA real · Mundial de Clubes 2025", "Demo sintética · 30 jugadores"])
+if dataset_mode.startswith("CSV del usuario"):
+    from supplied_app import render
+    render()
+    st.stop()
 if dataset_mode.startswith("FIFA real"):
     from fifa_app import render
     render()

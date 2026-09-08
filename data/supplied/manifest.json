@@ -1,0 +1,24 @@
+{
+  "source_kind": "user CSV / FIFA-EA FC videogame / SoFIFA links",
+  "snapshot": {
+    "fifa_version": 24,
+    "fifa_update": 2,
+    "update_as_of": "2023-09-22"
+  },
+  "counts": {
+    "players": 18350,
+    "teams": 702,
+    "coaches": 1369
+  },
+  "original_counts": {
+    "players": 180021,
+    "teams": 6947,
+    "coaches": 1369
+  },
+  "files": {
+    "male_players.csv": "cefc30316b1d9c2f713fe213cd5275e655bc7a501306b4abee5489e9a504430f",
+    "male_teams.csv": "85465319eebe4ffac29385e12152513f53ffb52b983bfeb4e135f1c44ea8698d",
+    "male_coaches.csv": "253ba4f5a6eee3c8d58172fb422dc4390d62e18e5fde4b3948a2e7de763e1a8f"
+  },
+  "note": "Coaches CSV sin fecha de actualización. Asociación según coach_id del snapshot de equipos; no prueba situación actual."
+}
