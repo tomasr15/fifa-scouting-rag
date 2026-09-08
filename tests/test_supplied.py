@@ -25,9 +25,71 @@ class SuppliedTests(unittest.TestCase):
             if r['metadata']['entity_type']=='club':
                 self.assertNotIn('transfer_budget_eur',r['metadata'])
         keeper=next(r for r in records if r['metadata'].get('is_goalkeeper'))
-        self.assertNotIn('Regate gambeta',keeper['embedding_text'])
-        self.assertIn('Reflejos',keeper['embedding_text'])
+        self.assertNotIn('gambeta',keeper['embedding_text'])
+        self.assertIn('Arquero portero',keeper['embedding_text'])
         self.assertNotIn(keeper['metadata']['name'],keeper['embedding_text'])
+        # Los arqueros se rankean contra arqueros, no contra jugadores de campo.
+        self.assertIn('rank_goalkeeping_reflexes',keeper['metadata'])
+        self.assertNotIn('rank_dribbling',keeper['metadata'])
+        # Los valores exactos salen del embedding pero siguen en el documento del LLM.
+        self.assertIn('Reflejos',keeper['document'])
+        self.assertNotIn('/100',keeper['embedding_text'])
+
+    def test_profiles_are_distinguishable_not_a_shared_template(self):
+        """La plantilla numérica anterior producía un texto casi idéntico para cada
+        jugador, y la búsqueda densa devolvía siempre los mismos perfiles."""
+        outfield=[r for r in self.records
+                  if r['metadata']['entity_type']=='player' and not r['metadata']['is_goalkeeper']]
+        texts={r['embedding_text'] for r in outfield[:4000]}
+        self.assertGreater(len(texts),1500)
+        fast=max(outfield,key=lambda r:r['metadata'].get('rank_pace',0))
+        slow=min(outfield,key=lambda r:r['metadata'].get('rank_pace',100))
+        self.assertIn('velocidad',fast['embedding_text'])
+        self.assertIn('lento',slow['embedding_text'])
+        # La carencia nunca nombra el atributo: el modelo no interpreta la negación
+        # y «poca velocidad» atraería justamente las consultas que piden velocidad.
+        self.assertNotIn('velocidad',slow['embedding_text'])
+
+    def test_rerank_orders_pool_by_requested_attribute(self):
+        from reranker import aspects_in_query,rerank
+        self.assertEqual(sorted(aspects_in_query('regate y velocidad')),
+                         ['dribbling','pace'])
+        self.assertEqual(aspects_in_query('un jugador para el equipo'),{})
+        pool=[{'id':r['id'],'similarity':0.5,'metadata':r['metadata']}
+              for r in self.records if r['metadata'].get('plays_ST')][:300]
+        top,evidence=rerank('delantero con mucho regate',pool,5)
+        self.assertTrue(evidence['applied'])
+        self.assertEqual(evidence['aspects_used'],['dribbling'])
+        self.assertEqual(len(top),5)
+        ranks=[c['metadata']['rank_dribbling'] for c in top]
+        self.assertEqual(ranks,sorted(ranks,reverse=True))
+        self.assertGreater(min(ranks),max(c['metadata']['rank_dribbling'] for c in pool)-10)
+        # Sin atributos reconocibles se conserva intacto el orden vectorial.
+        untouched,skipped=rerank('un jugador para el equipo',pool,5)
+        self.assertFalse(skipped['applied'])
+        self.assertEqual([c['id'] for c in untouched],[c['id'] for c in pool[:5]])
+
+    def test_similarity_never_outweighs_the_requested_attribute(self):
+        """La similitud coseno sólo desempata. Con peso apreciable, MiniLM hundía a
+        los jugadores que la consulta pedía: ubica a Messi en el puesto 496 para
+        «regate, vision y ultimo pase»."""
+        from reranker import rerank
+        líder=max((r for r in self.records if r['metadata'].get('plays_CAM')),
+                  key=lambda r:r['metadata']['rank_dribbling'])
+        # El mejor regateador entra último al pool y con la peor similitud posible.
+        otros=[r for r in self.records
+               if r['metadata'].get('plays_CAM') and r['id']!=líder['id']][:400]
+        pool=[{'id':r['id'],'similarity':0.9,'metadata':r['metadata']} for r in otros]
+        pool.append({'id':líder['id'],'similarity':0.01,'metadata':líder['metadata']})
+        top,_=rerank('mediapunta con mucho regate',pool,3)
+        self.assertEqual(top[0]['id'],líder['id'])
+
+    def test_raw_rating_breaks_ties_between_equal_percentiles(self):
+        from reranker import rerank
+        pares=[{'id':'a','similarity':0.9,'metadata':{'rank_pace':99.9,'pace':80.0}},
+               {'id':'b','similarity':0.1,'metadata':{'rank_pace':99.9,'pace':94.0}}]
+        top,_=rerank('extremo rapido',pares,2)
+        self.assertEqual([c['id'] for c in top],['b','a'])
 
     def test_coach_join_uses_team_id_reference(self):
         teams=pd.read_csv(DATA/'male_teams.csv')

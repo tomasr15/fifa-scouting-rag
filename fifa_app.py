@@ -74,8 +74,11 @@ def render():
         try:
             with st.spinner("Calculando embedding y buscando evidencia..."):
                 where = {"$and": clauses}
+                # Corpus de estadísticas del torneo, sin percentiles de atributos:
+                # se conserva el orden vectorial puro y los tiempos que mide.
                 st.session_state.fifa_result = run_scouting(query, store, k, where,
-                    LLMConfig.from_env(provider), benchmark if compare else None)
+                    LLMConfig.from_env(provider), benchmark if compare else None,
+                    rerank_by_attributes=False)
         except Exception as exc:
             st.error(str(exc))
     if "fifa_result" not in st.session_state:

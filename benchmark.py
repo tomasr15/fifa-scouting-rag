@@ -79,7 +79,16 @@ class SearchBenchmark:
         self.normalized_documents = pd.Series([normalize_text(d) for d in documents])
 
     def benchmark_search(self, query_text: str, filter_dict: dict | None = None,
-                         n_results: int = 5) -> dict:
+                         n_results: int = 5, vector_pool: int | None = None,
+                         select=None) -> dict:
+        """vector_pool amplía sólo la rama ANN cuando el pipeline va a reordenar.
+
+        select recibe el pool recuperado y devuelve (candidatos finales, evidencia).
+        Recibirlo aquí, y no reordenar por fuera, mantiene la comparativa honesta:
+        vector_only_ids sigue contrastando lo que realmente se muestra contra todas
+        las coincidencias léxicas. El LIMIT de LIKE sigue siendo n_results, y ambos
+        motores siguen resolviendo el mismo where.
+        """
         if not query_text.strip():
             raise ValueError("Ingresá una consulta no vacía.")
         if (self.store.collection.metadata or {}).get("dataset_hash") != self.fingerprint:
@@ -88,7 +97,11 @@ class SearchBenchmark:
             validate_where(filter_dict)
         # Valida campos/tipos antes de ejecutar ambas búsquedas, incluso si no hay términos.
         metadata_mask(self.frame, filter_dict)
-        vector = self.store.query_players_measured(query_text, n_results, filter_dict)
+        vector = self.store.query_players_measured(query_text, max(vector_pool or n_results, n_results),
+                                                   filter_dict)
+        pool = vector["candidates"]
+        selected, selection = select(pool) if select else (pool[:n_results], None)
+        vector = {**vector, "candidates": selected}
         lexical_start = perf_counter_ns()
         terms = keywords(query_text)
         mask = metadata_mask(self.frame, filter_dict)
@@ -112,10 +125,13 @@ class SearchBenchmark:
                    "terms": terms, "operator": "OR", "order_by": "id ASC", "limit": n_results,
                    "like_patterns": [f"%{t}%" for t in terms]}
         lexical_ids = {self.ids[i] for i in all_indices}
-        only_vector = [c["id"] for c in vector["candidates"] if c["id"] not in lexical_ids]
+        only_vector = [c["id"] for c in selected if c["id"] not in lexical_ids]
         return {"query": query_text, "where_filter": filter_dict, "vector": vector,
                 "lexical": lexical, "vector_only_ids": only_vector,
-                "note": BENCHMARK_NOTE,
+                "note": BENCHMARK_NOTE, "selection": selection,
+                # Top-k por distancia coseno antes de cualquier reordenamiento:
+                # permite contrastar en la interfaz los dos órdenes posibles.
+                "ann_top_ids": [c["id"] for c in pool[:n_results]],
                 "interpretation": (
                     "Sin términos útiles después de quitar palabras vacías; no se ejecuta LIKE sin condición."
                     if not terms else

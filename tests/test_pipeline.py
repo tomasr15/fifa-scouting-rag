@@ -103,6 +103,21 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(result["generated"])
         self.assertIn("[J1]", result["report"])
 
+    def test_gateway_error_body_without_choices_degrades(self):
+        """OpenRouter puede responder 200 con el error del proveedor en el cuerpo.
+        El SDK entrega choices=None y eso no debe tirar abajo la búsqueda resuelta."""
+        def handler(request):
+            return httpx.Response(200, json={"id": "x", "object": "chat.completion",
+                "created": 1, "model": "m", "error": {"message": "upstream", "code": 502}})
+        client = OpenAI(api_key="test-key", base_url="http://test.local/v1",
+                        http_client=httpx.Client(transport=httpx.MockTransport(handler)))
+        with patch("rag_pipeline.OpenAI", return_value=client):
+            result = run_scouting("volante mixto", self.store, k=2,
+                                  config=LLMConfig("openai", "m", "http://test.local/v1", "k"))
+        self.assertFalse(result["generated"])
+        self.assertIn("No se pudo generar el reporte", result["warning"])
+        self.assertEqual(len(result["candidates"]), 2)
+
     def test_generation_failure_retains_retrieval(self):
         with patch("rag_pipeline.OpenAI", side_effect=ValueError("test")):
             result = run_scouting("pase largo", self.store,

@@ -26,6 +26,8 @@ def main() -> int:
     parser.add_argument("--rebuild", action="store_true", help="Reemplazar el índice de jugadores")
     parser.add_argument("--index-only", action="store_true", help="Ingestar y salir")
     parser.add_argument("--benchmark", action="store_true", help="Comparar Chroma ANN vs escaneo léxico LIKE")
+    parser.add_argument("--no-rerank", action="store_true",
+                        help="supplied: mostrar el orden vectorial puro, sin reordenar por atributos")
     parser.add_argument("--dataset", choices=["supplied", "mock", "fifa"], default="supplied")
     parser.add_argument("--entity-type", choices=["player", "club", "coach"])
     parser.add_argument("--aspect", help="FIFA: technique, defence, physical, tactics, editorial_tactics, economics, roster")
@@ -50,9 +52,14 @@ def main() -> int:
         if args.csv or (args.league and args.dataset == 'fifa'): parser.error("Este corpus no acepta --csv; --league sólo aplica a supplied/mock.")
         query = args.query or input("Consulta: ").strip()
         where = {'$and':clauses} if len(clauses)>1 else clauses[0]
+        # Sólo supplied guarda percentiles de atributos; el corpus FIFA se deja en
+        # orden vectorial puro para no alterar los tiempos que reporta.
         result = run_scouting(query, store, args.k, where, LLMConfig.from_env(args.provider),
-                              benchmark if args.benchmark else None)
+                              benchmark if args.benchmark else None,
+                              rerank_by_attributes=args.dataset == "supplied" and not args.no_rerank)
         print_search_metrics(result)
+        print("\n=== ORDENAMIENTO ===")
+        print(result["rerank"]["reason"])
         print(json.dumps(result, ensure_ascii=False, indent=2))
         if args.output: args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
         return 0
@@ -72,7 +79,9 @@ def main() -> int:
             query = args.query or input("\nConsulta (Enter para salir): ").strip()
             if not query:
                 break
-            result = run_scouting(query, store, args.k, where, LLMConfig.from_env(args.provider), benchmark)
+            # El mock no expone percentiles: reordenar no aportaría nada.
+            result = run_scouting(query, store, args.k, where, LLMConfig.from_env(args.provider),
+                                  benchmark, rerank_by_attributes=False)
             print("\nEVIDENCIA RECUPERADA (menor distancia = mayor cercanía)")
             for i, candidate in enumerate(result["candidates"], 1):
                 print(f"\n[J{i}] distancia raw={candidate['distance']!r} | "

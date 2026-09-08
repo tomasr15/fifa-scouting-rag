@@ -112,8 +112,10 @@ class PlayerVectorStore:
         total_start = perf_counter_ns()
         if not query_text.strip():
             raise ValueError("Ingresá una consulta no vacía.")
-        if not isinstance(n_results, int) or not 1 <= n_results <= 30:
-            raise ValueError("n_results debe ser un entero entre 1 y 30.")
+        # El límite alto habilita recuperar un pool para reordenar. Sigue siendo una
+        # única llamada a collection.query: lo que se mide no cambia de naturaleza.
+        if not isinstance(n_results, int) or not 1 <= n_results <= 5000:
+            raise ValueError("n_results debe ser un entero entre 1 y 5000.")
         count = self.collection.count()
         if not count:
             return {"candidates": [], "execution_time_ms": 0.0, "embedding_time_ms": 0.0,

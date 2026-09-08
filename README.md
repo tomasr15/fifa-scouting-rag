@@ -244,7 +244,16 @@ una evaluación independiente ni garantizan aciertos en consultas nuevas.
 | `candidates[].distance` | Distancia coseno raw devuelta por Chroma, sin redondear ni transformar |
 | `candidates[].similarity` | Exactamente `1 - distance`, sin clipping; rango teórico [-1, 1], no probabilidad ni normalización a [0, 1] |
 | `candidates[].filter_metadata` | Valores escalares de los campos referenciados por el where; `{}` si no hubo filtro |
+| `candidates[].attribute_fit` | Percentil medio de los atributos que nombra la consulta, en [0, 1]; ausente si no se reordenó |
+| `candidates[].attribute_raw_mean` | Promedio de las valoraciones crudas de esos atributos; desempata entre percentiles iguales, no es calidad futbolística |
+| `rerank` | Atributos detectados en la consulta, cuáles se usaron, tamaño del pool y motivo del orden aplicado |
+| `ann_top_ids` | Top-k por distancia coseno **antes** de reordenar, para contrastar ambos órdenes |
 | `where_filter` | Expresión completa enviada a Chroma, también visible en consola/UI |
+
+`execution_time_ms` mide la recuperación del pool completo cuando el reordenamiento
+está activo, no la de `k` vecinos: es una sola llamada a `collection.query`, pero
+con `n_results` mayor. El corpus FIFA y el mock no guardan percentiles y se
+consultan siempre con `n_results = k`, así que sus tiempos son comparables entre sí.
 
 Se usa `time.perf_counter_ns()` y se convierten nanosegundos a milisegundos. Se
 conservan los floats completos en JSON y se muestran seis decimales para tiempos
@@ -296,6 +305,13 @@ print(comparison["lexical"]["total_matches"])
 
 La función pública inicializa el dataset/índice predeterminado una sola vez. Para
 otro CSV, DB o k, usar `SearchBenchmark(store, players).benchmark_search(query, where, k)`.
+
+`benchmark_search(query, where, k, vector_pool, select)` acepta además un pool ANN
+mayor y una función de selección que decide los candidatos finales a partir de ese
+pool. El pipeline le pasa el reordenamiento por atributos ahí, y no por fuera, para
+que `vector_only_ids` siga contrastando **lo que realmente se muestra** contra todas
+las coincidencias léxicas. El `LIMIT` de LIKE sigue siendo `k` y ambos motores
+resuelven el mismo `where`.
 `store.query_players_measured(...)` devuelve candidatos y métricas; `query_players(...)`
 conserva su API anterior de lista. Al cambiar un CSV, reiniciar la app/CLI como se indicó.
 

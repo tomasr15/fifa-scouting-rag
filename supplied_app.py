@@ -43,6 +43,10 @@ def render():
         elif kind=='coach' and st.checkbox('Sólo técnicos con equipo asociado',True):
             clauses.append({'has_team':True})
         k=st.slider('Resultados',1,15,5)
+        rerank=st.checkbox('Reordenar por los atributos de la consulta',True)
+        st.caption('El embedding no compara magnitudes. Con esta opción se recupera un pool amplio por '
+                   'cercanía semántica y se ordena por el percentil de los atributos nombrados en el texto. '
+                   'Desactivala para ver el orden vectorial puro.')
         provider=st.selectbox('Generador',['none','openai','ollama'])
         st.caption('openai usa el proveedor configurado en .env, incluido OpenRouter. none no llama al LLM.')
         compare=st.checkbox('Comparar ANN vs LIKE',True)
@@ -54,8 +58,11 @@ def render():
         st.session_state.pop('supplied_result',None)
         try:
             with st.spinner('Buscando y preparando el reporte…'):
-                st.session_state.supplied_result=run_scouting(query,store,k,{'$and':clauses},LLMConfig.from_env(provider),benchmark if compare else None)
+                st.session_state.supplied_result=run_scouting(query,store,k,{'$and':clauses},LLMConfig.from_env(provider),benchmark if compare else None,rerank_by_attributes=rerank)
         except Exception as exc: st.error(f'No se completó la búsqueda: {type(exc).__name__}')
+    if 'rerank' not in st.session_state.get('supplied_result',{'rerank':None}):
+        # Descarta salidas de una versión anterior al recargar una sesión ya abierta.
+        st.session_state.pop('supplied_result')
     if 'supplied_result' not in st.session_state: return
     r=st.session_state.supplied_result
     st.write('Consulta ejecutada:',r['query']); st.json(r['where_filter'])
@@ -64,10 +71,34 @@ def render():
     b.metric('Embedding',f"{r['embedding_time_ms']:.6f} ms")
     c.metric('Recuperación',f"{r['retrieval_time_ms']:.6f} ms")
     st.caption('Chroma.query incluye filtros y lectura de documentos. Score = 1 − distancia coseno, no confianza ni calidad futbolística.')
+    rr=r['rerank']
+    with st.expander('Ordenamiento aplicado',expanded=True):
+        st.write(rr['reason'])
+        if rr['applied']:
+            st.write(f"Pool recuperado por ANN: **{rr['pool_size']}** vectores. "
+                     "La distancia coseno decide quién es candidato; el percentil de los "
+                     "atributos decide el orden, y la similitud sólo desempata.")
+            st.json({'atributos_detectados':rr['aspects_detected'],'usados':rr['aspects_used']})
+            moved=[i for i,x in enumerate(r['candidates']) if x['id'] not in r['ann_top_ids']]
+            st.caption(f"{len(moved)} de {len(r['candidates'])} candidatos no estaban en el top {len(r['ann_top_ids'])} "
+                       "por distancia coseno: el orden vectorial puro los ubicaba más abajo del pool.")
+            if rr.get('pool_exhaustive'):
+                st.success('Cobertura completa: el pool agotó el subconjunto que pasa los filtros, '
+                           'así que el orden por atributos examinó a todos los candidatos elegibles.')
+            else:
+                st.warning('Cobertura parcial: hay más candidatos elegibles que el tope del pool, así que '
+                           'se ordenaron los más cercanos semánticamente y el resto quedó sin examinar. '
+                           'Acotá con posición o liga para obtener un orden exacto.')
+        elif rr.get('aspects_detected'):
+            st.caption('Se detectaron atributos pero el corpus no guarda percentiles para ellos.')
     if r['candidates']:
         st.dataframe(pd.DataFrame([{'Nombre':x['metadata']['name'],'Equipo':x['metadata']['club'],
            'ID vector':x['id'],'Distancia raw':x['distance'],'Score 1-d':x['similarity'],
+           'Ajuste atributos':x.get('attribute_fit'),'Valoración media':x.get('attribute_raw_mean'),
            'Metadata where':json.dumps(x['filter_metadata'],ensure_ascii=False)} for x in r['candidates']]),hide_index=True)
+        st.caption('«Ajuste atributos» es el percentil medio de los atributos que nombra la consulta, entre 0 y 1, '
+                   'y es la clave de orden. «Valoración media» es el promedio crudo de esos mismos atributos y '
+                   'desempata entre percentiles iguales. Ninguno es una probabilidad ni una medida de calidad futbolística.')
     for i,x in enumerate(r['candidates'],1):
         with st.expander(f"[J{i}] {x['metadata']['name']}"):
             st.write(x['document']); st.json(x['metadata'])

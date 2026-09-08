@@ -37,6 +37,31 @@ La recuperación y los embeddings son locales. El proveedor recibe la consulta y
 los fragmentos recuperados para redactar el reporte. Referencia:
 [documentación oficial de OpenAI](https://developers.openai.com/api/docs/quickstart).
 
+## OpenRouter
+
+OpenRouter expone el mismo protocolo que OpenAI, así que se usa con el generador
+**openai** cambiando dos variables. Es la configuración que trae esta entrega:
+
+```dotenv
+OPENAI_API_KEY=sk-or-v1-tu_clave
+OPENAI_MODEL=nvidia/nemotron-3-super-120b-a12b:free
+OPENAI_BASE_URL=https://openrouter.ai/api/v1
+```
+
+**Conviene fijar un modelo de chat concreto y no un router.** `openrouter/free`
+existe, pero elige cualquier modelo gratuito disponible: en una prueba de este
+proyecto le tocó `nemotron-3.5-content-safety`, un clasificador de moderación, que
+al ver nombres de jugadores en el contexto respondió `User Safety: unsafe /
+Safety Categories: PII/Privacy` en lugar de redactar el informe. La llamada se
+completa con éxito, así que el fallo no se distingue de un reporte válido salvo
+leyéndolo.
+
+Los modelos `:free` tienen límites de tasa compartidos y a veces devuelven 429 o un
+error del proveedor. En esos casos la aplicación conserva la búsqueda vectorial y
+muestra el aviso. La lista vigente está en
+[openrouter.ai/models](https://openrouter.ai/models); con crédito cargado,
+`openrouter/auto` elige un modelo de pago adecuado a cada consulta.
+
 ## Ollama o servidor compatible
 
 Para Ollama, iniciar su servidor, descargar `llama3.2:3b` con `ollama pull llama3.2:3b`
@@ -54,6 +79,9 @@ Para otro servidor compatible, elegir **openai** y configurar `OPENAI_BASE_URL`,
 - **401:** revisar la clave y que corresponda al proveedor configurado.
 - **429:** revisar la cuota y límites de la cuenta del proveedor.
 - **Modelo no disponible:** usar un modelo habilitado para esa cuenta.
+- **Responde algo que no es un informe** (por ejemplo `User Safety: unsafe`):
+  `OPENAI_MODEL` apunta a un router o a un clasificador, no a un modelo de chat.
+  Fijar un slug concreto.
 - **Ollama no conecta:** comprobar que el servidor esté iniciado y el modelo descargado.
 
 Ante un error del LLM se conserva la recuperación vectorial y se muestra un aviso.

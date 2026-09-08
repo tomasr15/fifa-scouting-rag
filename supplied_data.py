@@ -9,17 +9,27 @@ import json
 from pathlib import Path
 import pandas as pd
 from data_loader import BASE_DIR
+from reranker import ALL_ASPECTS, ASPECTS, GK_ASPECTS, RANK_PREFIX, describe
 
 DATA = BASE_DIR / 'data' / 'supplied'
-POSITION = {'GK': 'Arquero portero', 'ST': 'Delantero centro', 'CF': 'Segundo delantero',
-            'LW': 'Extremo izquierdo', 'RW': 'Extremo derecho', 'LM': 'Volante izquierdo',
-            'RM': 'Volante derecho', 'CM': 'Mediocampista central', 'CAM': 'Mediapunta creativo',
-            'CDM': 'Mediocentro defensivo', 'CB': 'Defensor central', 'LB': 'Lateral izquierdo',
-            'RB': 'Lateral derecho', 'LWB': 'Carrilero izquierdo', 'RWB': 'Carrilero derecho'}
+PROFILE_VERSION = 'supplied-profile-v3'
+# Nombre en español y término inglés: el modelo de embeddings es all-MiniLM-L6-v2,
+# entrenado en inglés, y ancla mucho mejor el rol con ambas formas presentes.
+POSITION = {'GK': 'Arquero portero goalkeeper', 'ST': 'Delantero centro nueve striker',
+            'CF': 'Segundo delantero forward', 'LW': 'Extremo izquierdo winger',
+            'RW': 'Extremo derecho winger', 'LM': 'Volante izquierdo left midfielder',
+            'RM': 'Volante derecho right midfielder', 'CM': 'Mediocampista central midfielder',
+            'CAM': 'Mediapunta creativo attacking midfielder',
+            'CDM': 'Mediocentro defensivo pivote holding midfielder',
+            'CB': 'Defensor central zaguero centre back', 'LB': 'Lateral izquierdo left back',
+            'RB': 'Lateral derecho right back', 'LWB': 'Carrilero izquierdo left wing back',
+            'RWB': 'Carrilero derecho right wing back'}
 ATTRIBUTES = {'pace': 'Ritmo', 'shooting': 'Tiro', 'passing': 'Pase', 'dribbling': 'Regate gambeta',
  'defending': 'Defensa', 'physic': 'Físico', 'skill_long_passing': 'Pase largo',
  'mentality_vision': 'Visión', 'power_stamina': 'Resistencia', 'power_strength': 'Fuerza',
  'movement_sprint_speed': 'Velocidad', 'attacking_finishing': 'Definición',
+ 'mentality_interceptions': 'Intercepciones', 'attacking_heading_accuracy': 'Juego aéreo',
+ 'power_jumping': 'Salto', 'attacking_crossing': 'Centros', 'skill_fk_accuracy': 'Tiros libres',
  'goalkeeping_diving': 'Estiradas', 'goalkeeping_handling': 'Blocaje',
  'goalkeeping_reflexes': 'Reflejos', 'goalkeeping_positioning': 'Colocación de portero'}
 TACTICS = {'def_style':'Estilo defensivo', 'off_style':'Estilo ofensivo',
@@ -33,8 +43,25 @@ TRANSLATE = {'Press after possession loss':'Presión tras pérdida', 'Constant p
  'Possession':'Posesión', 'Forward runs':'Desmarques hacia adelante', 'Direct passing':'Pase directo'}
 
 
+FOOT = {'Left': 'zurdo, pie izquierdo, left footed', 'Right': 'diestro, pie derecho, right footed'}
+
+
 def clean(row):
     return {k: v for k, v in row.items() if pd.notna(v) and isinstance(v, (str, int, float, bool))}
+
+
+def rank_table(frame):
+    """Percentil de cada atributo dentro del grupo comparable: campo o arquero.
+
+    Se usa el percentil y no el valor bruto porque las escalas no son homogéneas:
+    la resistencia se concentra entre 60 y 85 mientras la definición se dispersa
+    de 20 a 95. Promediar valores brutos de atributos distintos dejaría que el eje
+    de mayor escala domine siempre el orden.
+    """
+    keeper = frame['player_positions'].fillna('').str.contains('GK')
+    parts = [frame.loc[mask, [c for c in aspects if c in frame]].rank(pct=True)
+             for aspects, mask in ((ASPECTS, ~keeper), (GK_ASPECTS, keeper))]
+    return pd.concat(parts).reindex(frame.index)
 
 
 def prepare(source: Path = DATA / 'raw', destination: Path = DATA, version: int | None = None):
@@ -77,36 +104,49 @@ def build_records(data_dir: Path = DATA):
     frames = {kind:pd.read_csv(data_dir/f'male_{kind}.csv',low_memory=False) for kind in ('players','teams','coaches')}
     teams = {int(r['team_id']):clean(r) for r in frames['teams'].to_dict('records')}
     records = []
-    def add(kind, entity_id, name, club, profile, metadata, source):
+    def add(kind, entity_id, name, club, profile, metadata, source, detail=''):
+        # profile se vectoriza; detail sólo se agrega al documento que lee el LLM.
+        # Así los valores numéricos exactos quedan disponibles para el reporte sin
+        # contaminar el embedding, que no sabe comparar magnitudes.
         m = clean(metadata) | snapshot | {'entity_type':kind,'entity_id':str(entity_id),'name':name,
              'club':club,'gender':'male','source_kind':info['source_kind'],'aspect':'profile',
              'source_refs_json':json.dumps([{'url':source}],ensure_ascii=False) if source else '[]'}
         identity = f"{kind}:{entity_id}:{snapshot['fifa_version']}:{snapshot['fifa_update']}:{snapshot['update_as_of']}"
         records.append({'id':hashlib.sha256(identity.encode()).hexdigest(), 'embedding_text':profile,
           'document':f"{kind}: {name} | Equipo: {club} | FIFA/EA FC {snapshot['fifa_version']}, {snapshot['update_as_of']}. "
-            + profile + ' Valoraciones y economía del videojuego, no estadísticas reales de partidos ni finanzas auditadas.', 'metadata':m})
+            + profile + detail + ' Valoraciones y economía del videojuego, no estadísticas reales de partidos ni finanzas auditadas.', 'metadata':m})
     def source_url(value):
         if not isinstance(value,str): return ''
         return 'https://sofifa.com'+value if value.startswith('/') else value
     def tactics(row):
         return '. '.join(f'{label}: {TRANSLATE.get(str(row[k]),str(row[k]))}' for k,label in TACTICS.items() if k in row)
-    for raw in frames['players'].to_dict('records'):
+    ranks = rank_table(frames['players'])
+    for index, raw in zip(frames['players'].index, frames['players'].to_dict('records')):
         r=clean(raw); positions=[x.strip() for x in r['player_positions'].split(',')]
         keeper = 'GK' in positions
+        aspects = GK_ASPECTS if keeper else ASPECTS
+        percentiles = {k: float(ranks.at[index, k]) for k in aspects
+                       if k in ranks and pd.notna(ranks.at[index, k])}
+        # El perfil se redacta con vocabulario, no con cifras: «Regate 41/100» y
+        # «Regate 92/100» son casi el mismo vector para MiniLM, y esa plantilla
+        # idéntica para 18.000 jugadores era la causa de que la búsqueda devolviera
+        # siempre los mismos perfiles cortos.
         profile=', '.join(POSITION.get(x,x) for x in positions)+'. '
+        profile+=describe(sorted(((p,k) for k,p in percentiles.items()), reverse=True), aspects)
+        if r.get('preferred_foot') in FOOT: profile+=f"Perfil: {FOOT[r['preferred_foot']]}. "
         fields = [k for k in ATTRIBUTES if k.startswith('goalkeeping_') == keeper]
-        profile += '. '.join(f'{ATTRIBUTES[k]} {r[k]:g}/100' for k in fields if k in r)
-        if not keeper and 'dribbling' in r:
-            level='alto' if r['dribbling'] >= 80 else 'medio' if r['dribbling'] >= 65 else 'bajo'
-            profile+=f'. Nivel de regate {level} según valoración del juego.'
-        for k,label in [('preferred_foot','Pie preferido'),('skill_moves','Filigranas (1 a 5)'),('work_rate','Trabajo ataque/defensa'),('player_traits','Rasgos')]:
-            if k in r: profile+=f'. {label}: {r[k]}'
+        detail=' Valoraciones del juego: '+', '.join(f'{ATTRIBUTES[k]} {r[k]:g}/100' for k in fields if k in r)+'.'
+        for k,label in [('skill_moves','Filigranas (1 a 5)'),('work_rate','Trabajo ataque/defensa'),('player_traits','Rasgos')]:
+            if k in r: detail+=f' {label}: {r[k]}.'
         team=teams.get(int(r.get('club_team_id',-1)),{})
         m={k:v for k,v in r.items() if k in set(ATTRIBUTES)|{'age','overall','potential','value_eur','wage_eur','skill_moves','weak_foot','nationality_name','player_positions','club_team_id','preferred_foot'}}
         m.update(position=positions[0],is_goalkeeper=keeper,league=r.get('league_name','Sin liga'),
                  team_joined=bool(team))
+        # Los percentiles viajan en metadata para que el reordenamiento compare
+        # atributos de escalas distintas sin recalcular nada en cada consulta.
+        m.update({RANK_PREFIX+k: round(p*100, 1) for k, p in percentiles.items()})
         for pos in POSITION: m['plays_'+pos] = pos in positions
-        add('player',int(r['player_id']),r.get('long_name',r['short_name']),r.get('club_name','Sin club'),profile,m,source_url(r.get('player_url')))
+        add('player',int(r['player_id']),r.get('long_name',r['short_name']),r.get('club_name','Sin club'),profile,m,source_url(r.get('player_url')),detail)
     for r in teams.values():
         m={k:v for k,v in r.items() if k in set(TACTICS)|{'overall','attack','midfield','defence','transfer_budget_eur','club_worth_eur','coach_id','nationality_name'}}
         m['league']=r.get('league_name','Sin liga')
@@ -139,10 +179,13 @@ def open_store(rebuild=False, db_path=None):
     from vector_store import PlayerVectorStore
     records=build_records()
     info=json.loads((DATA/'manifest.json').read_text(encoding='utf-8'))
-    s=info['snapshot']; collection=f"football_supplied_v{s['fifa_version']}_u{s['fifa_update']}"
+    s=info['snapshot']
+    # La versión del perfil forma parte del nombre: al cambiar la redacción que se
+    # vectoriza se indexa una colección nueva en vez de fallar contra la anterior.
+    collection=f"football_supplied_v{s['fifa_version']}_u{s['fifa_update']}_{PROFILE_VERSION.replace('-','_')}"
     store=PlayerVectorStore(collection_name=collection,**({'persist_path':db_path} if db_path else {}))
     store.initialize_records([r['id'] for r in records],[r['document'] for r in records],
-        [r['metadata'] for r in records],fingerprint(records),'supplied-profile-v1',rebuild=rebuild,
+        [r['metadata'] for r in records],fingerprint(records),PROFILE_VERSION,rebuild=rebuild,
         embedding_texts=[r['embedding_text'] for r in records])
     return store,records,CorpusBenchmark(store,records)
 

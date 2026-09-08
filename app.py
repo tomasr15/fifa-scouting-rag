@@ -81,8 +81,11 @@ if submitted:
                              max_age if limit_age else None,
                              None if position == "Todas" else position)
         with st.spinner("Buscando perfiles y preparando el reporte..."):
+            # El mock no expone percentiles de atributos: reordenar no aportaría nada
+            # y ampliar el pool distorsionaría los tiempos que muestra esta pantalla.
             st.session_state.result = run_scouting(query, store, k, where, LLMConfig.from_env(provider),
-                                                  benchmark if compare else None)
+                                                  benchmark if compare else None,
+                                                  rerank_by_attributes=False)
     except Exception as exc:
         st.error(f"No se pudo completar la búsqueda: {exc}")
 
