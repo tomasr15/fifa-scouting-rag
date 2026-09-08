@@ -1,0 +1,3 @@
+# Sólo para volver a extraer los PDF; consultar los CSV y Chroma no requiere esto.
+pypdf==5.9.0
+pdfplumber==0.11.7

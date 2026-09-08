@@ -1,0 +1,398 @@
+{
+  "publisher": "FIFA",
+  "competition": "FIFA Club World Cup 2025",
+  "gender": "male",
+  "retrieved_at": "2026-09-08T19:26:57.010911+00:00",
+  "match_hub": "https://www.fifatrainingcentre.com/en/game/tournaments/fcwc/2025/post-match-summary-reports.php",
+  "squad_source": "https://fdp.fifa.org/assetspublic/ce233/pdf/SquadLists-English.pdf",
+  "squad_sha256": "1f08cb6f9e71e0aa304588102e6e95b69bb4a6224e63f187c5ae1365a6cbc220",
+  "squad_snapshot": "2025-07-04",
+  "matches": [
+    {
+      "match_id": 1,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M01%20AHL%20V%20MIA%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_01.pdf",
+      "sha256": "a2a996229d57a51995dfce9298267630dbd5786b376f87dfa62e129758e4da5f"
+    },
+    {
+      "match_id": 2,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M02%20BAY%20V%20AKL%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_02.pdf",
+      "sha256": "fb93bed9f0307d713ee2bb1b550192e9a85bec41b357134db70e4a6967cd6469"
+    },
+    {
+      "match_id": 3,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M03%20PSG%20V%20ATM%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_03.pdf",
+      "sha256": "faa016ef308795a6c83cee679abbaa2162fb0b0d5dbce6707b61ba03310803b9"
+    },
+    {
+      "match_id": 4,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M04%20PAL%20V%20POR%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_04.pdf",
+      "sha256": "2614e06d91a5f2bd5805217fefc1842ca5723ca48f52567a10b46856860eec9d"
+    },
+    {
+      "match_id": 5,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M05%20BOT%20V%20SEA%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_05.pdf",
+      "sha256": "5ad9aa0d2221e677c939b19e87f7e3f5335c75d74680717f719aaa82398b426d"
+    },
+    {
+      "match_id": 6,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M06%20CHE%20V%20LAF%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_06.pdf",
+      "sha256": "b7cc10380ad59bcc9994da763ad728dcfec508fcf4e51b5f6670c33276bc32fe"
+    },
+    {
+      "match_id": 7,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M07%20BOC%20V%20SLB%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_07.pdf",
+      "sha256": "4e37fed6c997a1cd0cca962b49f220aecf58e6dd87791c3410397822a4899ad3"
+    },
+    {
+      "match_id": 8,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M08%20FLA%20V%20EST%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_08.pdf",
+      "sha256": "10c84102d9f9dfbfb58fba400ddccc65548f2cc2e3a2e134bceb1776a9d26e52"
+    },
+    {
+      "match_id": 9,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M09%20FLU%20v%20BVB%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_09.pdf",
+      "sha256": "fecee94e96415253d191b72912cd817ca36ba33d210464cb4c33000343c6d9bb"
+    },
+    {
+      "match_id": 10,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M10%20RIV%20V%20URD%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_10.pdf",
+      "sha256": "590b520cd1f3ff6dddb6470cf7318f2c72b712fdfad5312b494fa3ca966d4e4c"
+    },
+    {
+      "match_id": 11,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M11%20UHD%20V%20MSU%20POST%20MATCH%20REPORT%20V2.pdf",
+      "file": "match_11.pdf",
+      "sha256": "5af2a84bd7912f7421ca7b31b867059eb3a9f7f6e53961ae69e60a24e514c03d"
+    },
+    {
+      "match_id": 12,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M12%20CFM%20V%20INT%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_12.pdf",
+      "sha256": "8461e98ab58a76a57f5c3160da9a9bf259152ec57ba1efd3baa7d054ab89efb9"
+    },
+    {
+      "match_id": 13,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M13%20MCI%20V%20WAC%20POST%20MATCH%20REPORT%20V2.pdf",
+      "file": "match_13.pdf",
+      "sha256": "157a8c87dd7a8eb535d12f7c00e976d7f7dac2f7941f0d52100339d6bbc252dd"
+    },
+    {
+      "match_id": 14,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M14%20RMA%20V%20HIL%20POST%20MATCH%20REPORT%20V2.pdf",
+      "file": "match_14.pdf",
+      "sha256": "fb3638e7abf4c30f74dbc6dead8664fd0c1263a290d2e7586d658a0b905e29c3"
+    },
+    {
+      "match_id": 15,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M15%20PAC%20V%20SAL%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_15.pdf",
+      "sha256": "f6abdb128c3fca7a43ca205c218c9ae72d90de90948a2233903d61be5e493a70"
+    },
+    {
+      "match_id": 16,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M16%20AIN%20V%20JUV%20POST%20MATCH%20REPORT%20V3.pdf",
+      "file": "match_16.pdf",
+      "sha256": "fecf0738856527e0c5644e109c3272c153d84c49efdb8f76b90900df89500c24"
+    },
+    {
+      "match_id": 17,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M17%20SEP%20V%20AHL%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_17.pdf",
+      "sha256": "3d7958050181939ed862c1cedb54078c7128f190d843a552f514694327e45fe1"
+    },
+    {
+      "match_id": 18,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M18%20MIA%20V%20POR%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_18.pdf",
+      "sha256": "eac2bbcba1397dc1e79a213c18a2331d7790e7455858b331a0400c790be5e132"
+    },
+    {
+      "match_id": 19,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M19%20SEA%20V%20ATM%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_19.pdf",
+      "sha256": "a551f475b2aedb59bb6786d2803b7f91f3f126fb33368eb1aab81b49fdd6564a"
+    },
+    {
+      "match_id": 20,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M20%20PSG%20V%20BOT%20POST%20MATCH%20REPORT%20V2.pdf",
+      "file": "match_20.pdf",
+      "sha256": "00b773fd5f8c7a00055308ece75d48f364d073e635a88b71a57411f16b37e940"
+    },
+    {
+      "match_id": 21,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M21%20SLB%20V%20AKL%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_21.pdf",
+      "sha256": "96034b7c5eeac2cf55cace684d8bf45c38d9707679689fa22a643d0c7a783fa0"
+    },
+    {
+      "match_id": 22,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M22%20FLA%20V%20CHE%20PSOT%20MATCH%20REPORT.pdf",
+      "file": "match_22.pdf",
+      "sha256": "e987db13f703b609caaa81bbe2df4123d11335ebd8d605d182014b5cf9f80945"
+    },
+    {
+      "match_id": 23,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M23%20LAF%20V%20EST%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_23.pdf",
+      "sha256": "bc7c5325e1917d120e6ce9b2e5b2d8884ee59c929e151eaa4c03fc8b2a6c4cf8"
+    },
+    {
+      "match_id": 24,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M24%20BAY%20V%20BOC%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_24.pdf",
+      "sha256": "45303121fce9a544f926c616baecb085d0affd3da289d1d32175159fd4fd5fa6"
+    },
+    {
+      "match_id": 25,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M25%20MSU%20V%20BVB%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_25.pdf",
+      "sha256": "f2476670e2b969ae5dd6117e246d094c4a6af227e910664e67cd505c3ff6417c"
+    },
+    {
+      "match_id": 26,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M26%20INT%20v%20URD%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_26.pdf",
+      "sha256": "65a9017fd9c5e08bc83f644d93ec5e0407babc1a7ac3e10da6816299dbbc53bd"
+    },
+    {
+      "match_id": 27,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M27%20FLU%20V%20UHD%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_27.pdf",
+      "sha256": "e7a6c1bc3c9d84c68b9e8bc6d91b6c5c52c2f0fb003ff69043acab86c3a41b28"
+    },
+    {
+      "match_id": 28,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M28%20RIV%20V%20CFM%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_28.pdf",
+      "sha256": "cd9e557a421cccc6a6599182af62d5cab653e927d16f13ae050c474044e1ee80"
+    },
+    {
+      "match_id": 29,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M29%20JUV%20V%20WAC%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_29.pdf",
+      "sha256": "38f466984ccdee309480878f29aafff3a13d714612079802d8130efe38847485"
+    },
+    {
+      "match_id": 30,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M30%20RMA%20V%20PAC%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_30.pdf",
+      "sha256": "6a86dba5280ee266c48b1fc0333c4ceabff9ae98cee338b93ae39137dc4f1532"
+    },
+    {
+      "match_id": 31,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M31%20SAL%20V%20HIL%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_31.pdf",
+      "sha256": "1090c0f438327dcc540a6b1bef8f5a6dc4325e1b4552f3ecc95ae1eb2a088e57"
+    },
+    {
+      "match_id": 32,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M32%20MCI%20V%20AIN%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_32.pdf",
+      "sha256": "d4ee2aba234332267c727f5920f66ffad8028b63ec78c00b89a0a86ff89b9146"
+    },
+    {
+      "match_id": 33,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M33%20SEA%20V%20PSG%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_33.pdf",
+      "sha256": "3a43a487f6950a42cc5acebbb65d74bc4a4f2cfcc23ae9f3174630c16e8e3477"
+    },
+    {
+      "match_id": 34,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M34%20ATM%20v%20BOT%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_34.pdf",
+      "sha256": "83a7cb934969ab84c1e80dc347b81146d67cd91489059a304dc3def026f26bd9"
+    },
+    {
+      "match_id": 35,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M35%20MIA%20V%20SEP%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_35.pdf",
+      "sha256": "aac91e38667bc9c4cc5aa45ac09fd31cc0e15084eec865bb5fe01a4dc7703ece"
+    },
+    {
+      "match_id": 36,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M36%20POR%20V%20AHL%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_36.pdf",
+      "sha256": "fdba3f598d2f50115f6f5a57275336070d0daadd6166559305f5cb1312c3bb0a"
+    },
+    {
+      "match_id": 37,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M37%20AKL%20V%20BOC%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_37.pdf",
+      "sha256": "17007066cdd031b4087ccf7ce33e440a343f553092d6ff0542289a3ac186a1fc"
+    },
+    {
+      "match_id": 38,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M38%20SLB%20V%20BAY%20POST%20MATCH%20REPORT%20.pdf",
+      "file": "match_38.pdf",
+      "sha256": "06d681e3b3b5dc7ccee345add28fc012eaa0bb97046fc6bbb15b0e4501fe4d21"
+    },
+    {
+      "match_id": 39,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M39%20LAF%20V%20FLA%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_39.pdf",
+      "sha256": "1cf33c1c0325b1a65cc1b29e172c84346f246ccb48ec27a64f6b2d09f142dca5"
+    },
+    {
+      "match_id": 40,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M40%20EST%20V%20CHE%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_40.pdf",
+      "sha256": "e62c6591d77a20cede14e409acc89eb52100b22e1487e84b643db114226123a1"
+    },
+    {
+      "match_id": 41,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M41%20BVB%20V%20UHD%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_41.pdf",
+      "sha256": "e4bbccf10d9b35fc8483824ab01c7346cf8b45d6e957ea01ebadfe3b8bcb5d89"
+    },
+    {
+      "match_id": 42,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M42%20MSU%20V%20FLU%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_42.pdf",
+      "sha256": "2bcd98f00b4aa3b7759ce3ebc67f467528b2ce2ecb6e961686331dd01abfd0b3"
+    },
+    {
+      "match_id": 43,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M43%20INT%20V%20RIV%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_43.pdf",
+      "sha256": "7c49963799b60d3fa66c257806c0e194e6f90b6c272492f26fe60ab8143151df"
+    },
+    {
+      "match_id": 44,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M44%20URD%20V%20CFM%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_44.pdf",
+      "sha256": "389ee8e2fb1d32afd2ab252c6082f08625f7f05d207be4b3f5a38c24c575823e"
+    },
+    {
+      "match_id": 45,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M45%20JUV%20V%20MCI%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_45.pdf",
+      "sha256": "3f47e9963475d5f562c434443c0e29c1541fd1cb7680c75ecb9385a9a9392140"
+    },
+    {
+      "match_id": 46,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M46%20WAC%20V%20AIN%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_46.pdf",
+      "sha256": "78daab1bc58a11f982c3cb79a965e59bcbb0617c6c17ce73b2606ea5833a6d30"
+    },
+    {
+      "match_id": 47,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M47%20HIL%20V%20PAC%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_47.pdf",
+      "sha256": "6b2316d101a2c1fa1d7635ca79012ecfe0163c045b1ccd6014fe3197b0a0c1b4"
+    },
+    {
+      "match_id": 48,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M48%20SAL%20V%20RMA%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_48.pdf",
+      "sha256": "85f358395a4b8ecd94a7e2398fd5fa812787115ab968cf587a03396418120b03"
+    },
+    {
+      "match_id": 49,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M49%20PAL%20V%20BOT%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_49.pdf",
+      "sha256": "3cbea90ca395f4f078fb20fa755f31fda078d10f0b47f4f2fc0ff9e1fdbc58c6"
+    },
+    {
+      "match_id": 50,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M50%20SLB%20V%20CHE%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_50.pdf",
+      "sha256": "211515de86489292e3f9c01fc354da29f3f1611dd45c99ab8ea1064b2aeb6e42"
+    },
+    {
+      "match_id": 51,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M51%20PSG%20V%20MIA%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_51.pdf",
+      "sha256": "a48e4d4ad5bb3f49e6db007ad4223fd5e9699f8bebf8c2f86cf545ffdfdd2b8c"
+    },
+    {
+      "match_id": 52,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M52%20FLA%20V%20BAY%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_52.pdf",
+      "sha256": "6b5b6a6084b5470201032bfcecf85030c7408c9e4bcafc5347ff03a92a1c6bf3"
+    },
+    {
+      "match_id": 53,
+      "url": "https://www.fifatrainingcentre.com/media/native/practice/M53%20INT%20V%20FLU%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_53.pdf",
+      "sha256": "5ea8487a2526193622d6eb4331bc8f450a0d5021ea3f6bda3609b081d2aa61a2"
+    },
+    {
+      "match_id": 54,
+      "url": "https://www.fifatrainingcentre.com/media/native/practice/M54%20MCI%20V%20HIL%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_54.pdf",
+      "sha256": "70b72682c6764cd7ebad6c0d7a8702463261e3d18c052c8b8ac5ec2402866428"
+    },
+    {
+      "match_id": 55,
+      "url": "https://www.fifatrainingcentre.com/media/native/practice/M55%20RMA%20V%20JUV%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_55.pdf",
+      "sha256": "c1e299c8792eaaebd0e74c962a3c986d4f42ece365bb89303bbca9f595a28a55"
+    },
+    {
+      "match_id": 56,
+      "url": "https://www.fifatrainingcentre.com/media/native/practice/M56%20BVB%20V%20CFM%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_56.pdf",
+      "sha256": "8ab8ac22266f3ffcc581e519cd0253759ed11dc662c72d1e51bde6bacb11349c"
+    },
+    {
+      "match_id": 57,
+      "url": "https://www.fifatrainingcentre.com/media/native/practice/M57%20FLU%20V%20HIL%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_57.pdf",
+      "sha256": "557a8411cd4d1191365f49801910ef9b5013ec4dae97d3e2779e877c8fb0abd9"
+    },
+    {
+      "match_id": 58,
+      "url": "https://www.fifatrainingcentre.com/media/native/practice/M58%20SEP%20V%20CHE%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_58.pdf",
+      "sha256": "7837e90aa6a404cc5cf1738df272d9de5536982c491a8ce4eab7bd212bd3f718"
+    },
+    {
+      "match_id": 59,
+      "url": "https://www.fifatrainingcentre.com/media/native/practice/M59%20PSG%20V%20BAY%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_59.pdf",
+      "sha256": "acfd7dc743bbc7a10b06adeb0a97490ebced7d1326faae4083e3b133b675a7f9"
+    },
+    {
+      "match_id": 60,
+      "url": "https://www.fifatrainingcentre.com/media/native/practice/M60%20RMA%20V%20BVB%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_60.pdf",
+      "sha256": "029974b3ae86ef186aac7e1d6cf6633c0dd9159645ef7fc69568ee631d8431ef"
+    },
+    {
+      "match_id": 61,
+      "url": "https://www.fifatrainingcentre.com/media/native/practice/M61%20FLU%20V%20CHE%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_61.pdf",
+      "sha256": "e35eef4c84fce0dcff071e87846493a00bfe50b677cd6a4bf521a31481466242"
+    },
+    {
+      "match_id": 62,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M62%20PSG%20V%20RMA%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_62.pdf",
+      "sha256": "12d2475cf54fa2351272e315e802d7e5a70db82d089f2d47824c72a50f501d1d"
+    },
+    {
+      "match_id": 63,
+      "url": "https://www.fifatrainingcentre.com/media/native/tournaments/fcwc/2025/M63%20CHE%20V%20PSG%20POST%20MATCH%20REPORT.pdf",
+      "file": "match_63.pdf",
+      "sha256": "a5e9bf582a2954628216dc8968e1996d5b7e87fbe995880a683608076c6532ff"
+    }
+  ],
+  "economic_source": "https://inside.fifa.com/organisation/news/club-world-cup-2025-record-prize-money-unprecedented-solidarity-benefit-club-football?entryId=Qqle9UafPSuWrUUj9isYF&requester=MediaHub",
+  "counts": {
+    "players": 1000,
+    "clubs": 32,
+    "coaches": 32,
+    "matches": 63,
+    "player_match_rows": 1998
+  }
+}
