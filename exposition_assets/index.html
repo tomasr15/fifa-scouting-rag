@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Laboratorio de bases vectoriales</title><style>/*__STYLES__*/</style></head>
+<body>
+<main>
+  <nav aria-label="Demostraciones" class="tabs">
+    <button data-tab="vectors" aria-pressed="true">1 · Vectores y similitud</button>
+    <button data-tab="neighbors" aria-pressed="false">2 · Vecinos y filtros</button>
+    <button data-tab="hnsw" aria-pressed="false">3 · Recorrido HNSW</button>
+  </nav>
+  <section id="vectors" aria-labelledby="vtitle">
+    <div class="heading"><p class="eyebrow">INTEGRANTE 2 · DIAPOSITIVA 5</p><h1 id="vtitle">El ángulo cambia la similitud</h1><p>Comparamos la orientación de dos vectores. La flecha azul queda fija; mové la naranja.</p></div>
+    <div class="controls"><label for="angle">Ángulo <output id="angleValue">45°</output><input id="angle" type="range" min="0" max="180" value="45"></label><div class="presets"><button data-angle="0">0°</button><button data-angle="90">90°</button><button data-angle="180">180°</button><button id="resetVectors">Reiniciar</button></div></div>
+    <div class="visual-grid"><svg id="vectorPlot" viewBox="0 0 620 420" role="img" aria-label="Dos vectores unitarios y su ángulo"></svg><div class="reading"><p>SIMILITUD COSENO</p><strong id="similarity">0,707</strong><p>DISTANCIA = 1 − COSENO</p><strong id="cosDistance">0,293</strong><p id="angleMeaning" aria-live="polite"></p></div></div>
+    <p class="note">Modelo geométrico en 2D. En el buscador, MiniLM produce 384 dimensiones. Una similitud alta no es una probabilidad de acierto.</p>
+  </section>
+  <section id="neighbors" hidden aria-labelledby="ntitle">
+    <div class="heading"><p class="eyebrow">INTEGRANTE 3 · DIAPOSITIVA 8</p><h1 id="ntitle">Primero elegibles, después vecinos</h1><p>Mové Q, cambiá k y aplicá restricciones. Aquí calculamos todos los cosenos: la búsqueda es exacta.</p></div>
+    <div class="controls neighbors-controls">
+      <label for="qx">Consulta X <output id="qxValue">4</output><input id="qx" type="range" min="-5" max="5" step="0.5" value="4"></label>
+      <label for="qy">Consulta Y <output id="qyValue">1</output><input id="qy" type="range" min="-5" max="5" step="0.5" value="1"></label>
+      <label for="k">Top-k <output id="kValue">3</output><input id="k" type="range" min="1" max="8" value="3"></label>
+      <label for="position">Posición<select id="position"><option>Todas</option><option>ST</option><option>CM</option><option>CB</option><option>GK</option></select></label>
+      <label for="age">Edad máxima <output id="ageValue">40</output><input id="age" type="range" min="18" max="40" value="40"></label>
+      <button id="resetNeighbors">Reiniciar</button>
+    </div>
+    <div class="visual-grid"><svg id="neighborsPlot" viewBox="0 0 620 470" role="img" aria-label="Perfiles sintéticos, consulta y vecinos elegidos"></svg><div class="ranking"><p id="resultCount" aria-live="polite"></p><table><thead><tr><th>Perfil</th><th>Edad</th><th>Distancia</th></tr></thead><tbody id="rankingBody"></tbody></table><p id="emptyMessage" role="status"></p></div></div>
+    <p class="legend">★ Consulta Q &nbsp; ● Vecino seleccionado &nbsp; ○ Elegible &nbsp; × Excluido por filtro</p>
+    <p class="note">Perfiles A–L inventados para enseñar. Sus coordenadas no son embeddings reales ni estadísticas de futbolistas. ST: delantero; CM: mediocampista; CB: central; GK: arquero.</p>
+  </section>
+  <section id="hnsw" hidden aria-labelledby="htitle">
+    <div class="heading"><p class="eyebrow">INTEGRANTE 3 · DIAPOSITIVA 7</p><h1 id="htitle">Un recorrido por capas</h1><p>Los niveles superiores permiten saltos amplios; la capa base refina la búsqueda.</p></div>
+    <div class="controls"><button id="prevStep">Anterior</button><strong id="stepCount">Paso 1 de 7</strong><button id="nextStep">Siguiente</button><button id="resetGraph">Reiniciar</button></div>
+    <svg id="graphPlot" viewBox="0 0 940 390" role="img" aria-label="Grafo didáctico de tres capas con un recorrido guiado"></svg>
+    <p class="step-detail" id="stepDetail" aria-live="polite"></p>
+    <p class="legend">● Candidato actual &nbsp; ◉ Visitado &nbsp; ○ Sin explorar &nbsp; línea naranja: salto elegido</p>
+    <p class="note">Simulación simplificada con distancia euclídea sobre una coordenada. Las capas se separan sólo para dibujarlas. No representa el índice de Chroma. HNSW real usa listas de candidatos y parámetros de exploración; no garantiza el vecino exacto.</p>
+  </section>
+</main>
+<script>/*__MODEL__*/</script><script>/*__UI__*/</script>
+</body></html>

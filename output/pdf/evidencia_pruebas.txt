@@ -1,0 +1,90 @@
+test_conceptual_demo_without_literal_matches (test_benchmark.BenchmarkTests.test_conceptual_demo_without_literal_matches) ... ok
+test_empty_lexical_terms_and_filters (test_benchmark.BenchmarkTests.test_empty_lexical_terms_and_filters) ... ok
+test_filter_operator_parity_with_chroma (test_benchmark.BenchmarkTests.test_filter_operator_parity_with_chroma) ... ok
+test_literal_search_finds_matches_and_shares_where (test_benchmark.BenchmarkTests.test_literal_search_finds_matches_and_shares_where) ... ok
+test_rag_reuses_one_measured_query (test_benchmark.BenchmarkTests.test_rag_reuses_one_measured_query) ... ok
+test_reject_different_corpus (test_benchmark.BenchmarkTests.test_reject_different_corpus) ... ok
+test_streamlit_benchmark_mode (test_benchmark.BenchmarkTests.test_streamlit_benchmark_mode) ... 2026-09-12 18:26:43.469 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_summary_and_empty_collection (test_benchmark.BenchmarkTests.test_summary_and_empty_collection) ... ok
+test_timings_raw_cosine_and_filtered_metadata (test_benchmark.BenchmarkTests.test_timings_raw_cosine_and_filtered_metadata) ... ok
+test_dotenv_and_environment_precedence (test_config.ConfigTests.test_dotenv_and_environment_precedence) ... ok
+test_edits_are_read_without_mutating_environment (test_config.ConfigTests.test_edits_are_read_without_mutating_environment) ... ok
+test_coverage_and_joins (test_fifa.FifaTests.test_coverage_and_joins) ... ok
+test_identity_excluded_and_sources_present (test_fifa.FifaTests.test_identity_excluded_and_sources_present) ... ok
+test_missing_stats_and_economics (test_fifa.FifaTests.test_missing_stats_and_economics) ... ok
+test_real_index_and_identical_filters (test_fifa.FifaTests.test_real_index_and_identical_filters) ... ok
+test_streamlit_real_search (test_fifa.FifaTests.test_streamlit_real_search) ... 2026-09-12 18:26:51.483 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_visually_checked_pdf_values (test_fifa.FifaTests.test_visually_checked_pdf_values) ... ok
+test_combined_filter_and_order (test_pipeline.PipelineTests.test_combined_filter_and_order) ... ok
+test_csv_validation_and_stable_ids (test_pipeline.PipelineTests.test_csv_validation_and_stable_ids) ... ok
+test_empty_results_skip_llm (test_pipeline.PipelineTests.test_empty_results_skip_llm) ... ok
+test_gateway_error_body_without_choices_degrades (test_pipeline.PipelineTests.test_gateway_error_body_without_choices_degrades)
+OpenRouter puede responder 200 con el error del proveedor en el cuerpo. ... ok
+test_generation_failure_retains_retrieval (test_pipeline.PipelineTests.test_generation_failure_retains_retrieval) ... ok
+test_index_persistence_and_cosine (test_pipeline.PipelineTests.test_index_persistence_and_cosine) ... ok
+test_invalid_queries_and_changed_dataset (test_pipeline.PipelineTests.test_invalid_queries_and_changed_dataset) ... ok
+test_real_openai_sdk_with_mock_http_transport (test_pipeline.PipelineTests.test_real_openai_sdk_with_mock_http_transport) ... ok
+test_streamlit_search (test_pipeline.PipelineTests.test_streamlit_search) ... 2026-09-12 18:26:56.936 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_app_starts_inactive_without_indexing (test_supplied.SuppliedTests.test_app_starts_inactive_without_indexing) ... 2026-09-12 18:27:02.296 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_coach_join_uses_team_id_reference (test_supplied.SuppliedTests.test_coach_join_uses_team_id_reference) ... ok
+test_historical_selection_no_cross_version_join (test_supplied.SuppliedTests.test_historical_selection_no_cross_version_join) ... ok
+test_profiles_are_distinguishable_not_a_shared_template (test_supplied.SuppliedTests.test_profiles_are_distinguishable_not_a_shared_template)
+La plantilla num�rica anterior produc�a un texto casi id�ntico para cada ... ok
+test_raw_rating_breaks_ties_between_equal_percentiles (test_supplied.SuppliedTests.test_raw_rating_breaks_ties_between_equal_percentiles) ... ok
+test_rerank_orders_pool_by_requested_attribute (test_supplied.SuppliedTests.test_rerank_orders_pool_by_requested_attribute) ... ok
+test_similarity_never_outweighs_the_requested_attribute (test_supplied.SuppliedTests.test_similarity_never_outweighs_the_requested_attribute)
+La similitud coseno s�lo desempata. Con peso apreciable, MiniLM hund�a a ... ok
+test_small_real_index_and_filters (test_supplied.SuppliedTests.test_small_real_index_and_filters) ... 2026-09-12 18:27:03.471 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_snapshot_identity_and_missing_finances (test_supplied.SuppliedTests.test_snapshot_identity_and_missing_finances) ... ok
+
+----------------------------------------------------------------------
+Ran 35 tests in 23.819s
+
+OK
+
+=== COLECCI�N VECTORIAL ===
+Nombre: players_scouting | Espacio real: cosine
+Creaci�n: metadata={'hnsw:space': 'cosine'}
+Vectores: 30 | D = 384
+�ndice: HNSW (Chroma; puede incluir buffer de fuerza bruta)
+
+=== COLECCI�N VECTORIAL ===
+Nombre: players_scouting | Espacio real: cosine
+Creaci�n: metadata={'hnsw:space': 'cosine'}
+Vectores: 30 | D = 384
+�ndice: HNSW (Chroma; puede incluir buffer de fuerza bruta)
+
+=== COLECCI�N VECTORIAL ===
+Nombre: football_fifa_2025 | Espacio real: cosine
+Creaci�n: metadata={'hnsw:space': 'cosine'}
+Vectores: 2452 | D = 384
+�ndice: HNSW (Chroma; puede incluir buffer de fuerza bruta)
+
+=== COLECCI�N VECTORIAL ===
+Nombre: football_fifa_2025 | Espacio real: cosine
+Creaci�n: metadata={'hnsw:space': 'cosine'}
+Vectores: 2452 | D = 384
+�ndice: HNSW (Chroma; puede incluir buffer de fuerza bruta)
+
+=== COLECCI�N VECTORIAL ===
+Nombre: players_scouting | Espacio real: cosine
+Creaci�n: metadata={'hnsw:space': 'cosine'}
+Vectores: 30 | D = 384
+�ndice: HNSW (Chroma; puede incluir buffer de fuerza bruta)
+
+=== COLECCI�N VECTORIAL ===
+Nombre: players_scouting | Espacio real: cosine
+Creaci�n: metadata={'hnsw:space': 'cosine'}
+Vectores: 30 | D = 384
+�ndice: HNSW (Chroma; puede incluir buffer de fuerza bruta)
+
+=== COLECCI�N VECTORIAL ===
+Nombre: supplied_test | Espacio real: cosine
+Creaci�n: metadata={'hnsw:space': 'cosine'}
+Vectores: 9 | D = 384
+�ndice: HNSW (Chroma; puede incluir buffer de fuerza bruta)

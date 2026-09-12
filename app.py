@@ -1,15 +1,21 @@
 """Interfaz de demostración: python -m streamlit run app.py."""
 import json
 
-import pandas as pd
 import streamlit as st
 
+st.set_page_config(page_title="Bases vectoriales · Scouting", page_icon="⚽", layout="wide")
+section = st.sidebar.radio("Sección", ["Buscador", "Exposición interactiva"], key="app_section")
+if section == "Exposición interactiva":
+    from exposition import render_exposition
+    render_exposition()
+    st.stop()
+
+import pandas as pd
 from data_loader import load_players
 from benchmark import BENCHMARK_NOTE, DEMO_QUERY, SearchBenchmark
 from rag_pipeline import LLMConfig, run_scouting
 from vector_store import PlayerVectorStore, build_filter
 
-st.set_page_config(page_title="Scouting semántico", page_icon="⚽", layout="wide")
 dataset_mode = st.sidebar.selectbox("Dataset", ["CSV del usuario · FIFA/EA FC", "FIFA real · Mundial de Clubes 2025", "Demo sintética · 30 jugadores"])
 if dataset_mode.startswith("CSV del usuario"):
     from supplied_app import render

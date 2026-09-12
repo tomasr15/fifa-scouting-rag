@@ -13,3 +13,5 @@ data/supplied/raw/
 *.log
 *.zip
 resultado*.json
+tmp/
+.chart-data-*/
