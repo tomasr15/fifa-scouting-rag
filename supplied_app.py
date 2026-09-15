@@ -15,7 +15,6 @@ def render():
     st.title('⚽ Scouting · CSV de jugadores, equipos y técnicos')
     info=json.loads((DATA/'manifest.json').read_text(encoding='utf-8'))
     st.caption(f"FIFA/EA FC {info['snapshot']['fifa_version']} · {info['snapshot']['update_as_of']} · CSV aportados por el usuario, enlaces SoFIFA")
-    st.info('Datos del videojuego: valoraciones técnicas, tácticas y valores económicos; no son estadísticas oficiales de partidos ni finanzas auditadas.')
     st.write(info['counts'])
     # No indexar ni cargar MiniLM por el mero hecho de abrir la página.
     if not st.checkbox('Activar buscador local (Chroma + embeddings MiniLM)',key='supplied_enabled'):
@@ -47,8 +46,7 @@ def render():
         st.caption('El embedding no compara magnitudes. Con esta opción se recupera un pool amplio por '
                    'cercanía semántica y se ordena por el percentil de los atributos nombrados en el texto. '
                    'Desactivala para ver el orden vectorial puro.')
-        provider=st.selectbox('Generador',['none','openai','ollama'])
-        st.caption('openai usa el proveedor configurado en .env, incluido OpenRouter. none no llama al LLM.')
+        provider=st.selectbox('Generador',['none','openai','ollama'],format_func=lambda value: 'OpenRouter' if value=='openai' else value)
         compare=st.checkbox('Comparar ANN vs LIKE',True)
     with st.form('supplied_search'):
         query=st.text_area('Consulta','Delantero con regate y desborde')

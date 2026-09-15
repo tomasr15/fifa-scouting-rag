@@ -22,6 +22,8 @@ import re
 import unicodedata
 
 # clave -> (disparadores en la consulta, vocabulario del perfil, palabra de carencia)
+# Ejemplo: «rápido» activa pace; el segundo texto describe una fortaleza
+# y el tercero describe una limitación. Las claves coinciden con el dataset.
 ASPECTS: dict[str, tuple[str, str, str]] = {
     "pace": (
         "rapido rapida veloz velocidad ritmo rapidez pique pace speed fast",
@@ -79,6 +81,7 @@ ASPECTS: dict[str, tuple[str, str, str]] = {
         "resistencia, despliegue, ida y vuelta, stamina", "poco recorrido"),
 }
 
+# Mismo esquema de vocabulario, pero para habilidades de arqueros (GK).
 GK_ASPECTS: dict[str, tuple[str, str, str]] = {
     "goalkeeping_diving": (
         "estirada estiradas vuelo vuelos palo diving", "estiradas, vuelos, diving", "poca estirada"),
@@ -92,11 +95,14 @@ GK_ASPECTS: dict[str, tuple[str, str, str]] = {
         "colocacion, salidas, achique, positioning", "mal colocado"),
 }
 
+# Une los atributos de campo y de arqueros para detectar ambos en las consultas.
 ALL_ASPECTS = ASPECTS | GK_ASPECTS
+# En metadata, dribbling guarda el valor original y rank_dribbling su percentil.
 RANK_PREFIX = "rank_"
 
 
 def normalize(text: str) -> str:
+    # Normaliza mayúsculas y elimina tildes: «RÁPIDO» pasa a «rapido».
     lowered = unicodedata.normalize("NFD", str(text).casefold())
     return "".join(c for c in lowered if not unicodedata.combining(c))
 
@@ -104,6 +110,8 @@ def normalize(text: str) -> str:
 def band(percentile: float) -> str | None:
     """Tramo cualitativo. Devuelve None por debajo de la mediana: un atributo del
     montón no es una fortaleza y nombrarlo sólo diluye el vector."""
+    # Aquí el percentil se recibe entre 0 y 1: 0.95 equivale al percentil 95.
+    # Se revisa primero la categoría más alta; return termina la función.
     if percentile >= 0.95:
         return "de elite, excepcional, world class"
     if percentile >= 0.85:
@@ -122,8 +130,12 @@ def describe(ranked: list[tuple[float, str]], aspects: dict) -> str:
     el modelo no interpreta la negación, así que escribir «poca velocidad» atraería
     justamente las consultas que piden velocidad.
     """
+    # ranked debe venir ordenado de mayor a menor percentil.
+    # Describe como máximo cuatro fortalezas con percentil de al menos 0.50.
     strong = [(p, key) for p, key in ranked if band(p)][:4]
+    # Entre los últimos tres atributos, señala los que están por debajo de 0.35.
     weak = [key for p, key in ranked[-3:] if p < 0.35]
+    # aspects[k][1] aporta el vocabulario; band(p) aporta la calidad de la habilidad.
     text = ("Fortalezas: " + ". ".join(f"{aspects[k][1]} {band(p)}" for p, k in strong) + ". "
             if strong else "Rendimiento parejo, sin atributos destacados. ")
     if weak:
@@ -133,9 +145,13 @@ def describe(ranked: list[tuple[float, str]], aspects: dict) -> str:
 
 def aspects_in_query(query: str, keys: dict = ALL_ASPECTS) -> dict[str, list[str]]:
     """Atributos evocados por la consulta y el término que disparó cada uno."""
+    # Extrae palabras sin tildes ni mayúsculas; set elimina las repetidas.
     words = set(re.findall(r"[a-z]+", normalize(query)))
     hits = {}
     for key, (triggers, _, _) in keys.items():
+        # Busca palabras exactas compartidas con los disparadores del atributo.
+        # Ejemplo: «rápido y con regate» detecta pace y dribbling.
+        # No interpreta negaciones: «no quiero velocidad» también activa pace.
         matched = sorted(words.intersection(triggers.split()))
         if matched:
             hits[key] = matched
@@ -156,18 +172,30 @@ def rerank(query: str, candidates: list[dict], k: int) -> tuple[list[dict], dict
     candidatos sin percentiles en metadata (clubes, técnicos, otros corpus)
     conservan el orden vectorial.
     """
+    # Recibe candidatos de una búsqueda previa: no busca jugadores nuevos.
+    # query es la consulta y k es la cantidad máxima de resultados a devolver.
+    # 1. Detecta qué habilidades pide el usuario.
     hits = aspects_in_query(query)
+    # 2. Usa las habilidades cuyo percentil existe en al menos un candidato.
     columns = [key for key in hits if any(RANK_PREFIX + key in c["metadata"] for c in candidates)]
+    # Guarda una explicación de qué se detectó y si se pudo reordenar la lista.
     evidence = {"aspects_detected": hits, "aspects_used": columns, "pool_size": len(candidates),
                 "applied": bool(columns)}
     if not columns:
+        # Sin percentiles utilizables, devuelve los primeros k en el orden recibido.
         evidence["reason"] = ("La consulta no menciona atributos medibles del dataset, "
                               "o el corpus no expone percentiles: se conserva el orden vectorial.")
         return candidates[:k], evidence
     for candidate in candidates:
         metadata = candidate["metadata"]
+        # 3. Lee los percentiles pedidos y los convierte de escala 0–100 a 0–1.
+        # Si falta un atributo, promedia solamente los disponibles.
         ranks = [metadata[RANK_PREFIX + col] / 100
                  for col in columns if RANK_PREFIX + col in metadata]
+        # attribute_fit mide el ajuste a las habilidades pedidas, con igual peso.
+        # Ejemplo: velocidad 90 y regate 80 -> (0.90 + 0.80) / 2 = 0.85.
+        # Sin percentiles disponibles, el puntaje es 0.0.
+        # Esta asignación agrega un campo al diccionario original del candidato.
         candidate["attribute_fit"] = round(sum(ranks) / len(ranks), 4) if ranks else 0.0
         # Los percentiles se guardan con un decimal, así que en la cola alta muchos
         # jugadores caen en el mismo casillero. La valoración cruda desempata entre
@@ -175,8 +203,13 @@ def rerank(query: str, candidates: list[dict], k: int) -> tuple[list[dict], dict
         # atributos de escalas distintas.
         raw = [metadata[col] for col in columns if isinstance(metadata.get(col), (int, float))]
         candidate["attribute_raw_mean"] = round(sum(raw) / len(raw), 2) if raw else 0.0
+    # 4. Ordena de mayor a menor usando estos criterios en secuencia:
+    # primero attribute_fit; si empatan, attribute_raw_mean;
+    # si también empatan, similarity (similitud de la búsqueda vectorial).
+    # [:k] conserva solo los primeros k resultados del nuevo orden.
     ordered = sorted(candidates, reverse=True, key=lambda c: (
         c["attribute_fit"], c["attribute_raw_mean"], c["similarity"]))[:k]
     evidence["reason"] = ("Orden por el percentil medio de " + ", ".join(columns)
                           + "; la similitud coseno sólo desempata.")
+    # Devuelve tanto los candidatos ordenados como la explicación del proceso.
     return ordered, evidence

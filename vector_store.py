@@ -17,6 +17,8 @@ COLLECTION_NAME = "players_scouting"
 INDEX_VERSION = "minilm-onnx-document-v1"
 
 
+# Construye filtros exactos de metadata: liga, edad máxima y posición.
+# $eq significa «igual a», $lte «menor o igual» y $and exige todos los filtros.
 def build_filter(league: str | None = None, max_age: int | None = None,
                  position: str | None = None) -> dict | None:
     clauses = []
@@ -34,15 +36,19 @@ def build_filter(league: str | None = None, max_age: int | None = None,
 class PlayerVectorStore:
     def __init__(self, persist_path: str | Path = BASE_DIR / "chroma_db", collection_name: str = COLLECTION_NAME):
         self.collection_name = collection_name
+        # Base persistente: guarda el índice en disco para reutilizarlo al reiniciar.
         self.client = chromadb.PersistentClient(
             path=str(Path(persist_path).resolve()),
             settings=Settings(anonymized_telemetry=False),
         )
+        # MiniLM local convierte documentos y consultas en vectores de 384 números.
         self.embedding_function = DefaultEmbeddingFunction()
         self._lock = threading.RLock()
         self.collection = self._get_collection()
 
     def _get_collection(self):
+        # Obtiene la colección existente o crea una con HNSW y distancia coseno.
+        # Cuanto menor sea la distancia, mayor será la cercanía entre los vectores.
         return self.client.get_or_create_collection(
             name=self.collection_name,
             embedding_function=self.embedding_function,
@@ -68,9 +74,12 @@ class PlayerVectorStore:
             raise ValueError("Los textos de embedding deben corresponder a cada ID.")
         with self._lock:
             if rebuild:
+                # Reconstrucción explícita: reemplaza únicamente esta colección.
                 self.client.delete_collection(self.collection_name)
                 self.collection = self._get_collection()
             metadata = self.collection.metadata or {}
+            # Verifica la métrica real y, si hay registros, la huella del dataset,
+            # la versión y la cantidad para decidir si puede reutilizar el índice.
             if (self.collection.configuration.get("hnsw") or {}).get("space") != "cosine":
                 raise ValueError("El índice no usa coseno. Ejecutá main.py --rebuild.")
             if self.collection.count():
@@ -82,6 +91,8 @@ class PlayerVectorStore:
                 return False
             # Publicamos el hash sólo al terminar todos los lotes. Un fallo parcial
             # nunca se interpreta como una ingesta completa en el siguiente arranque.
+            # Indexa en lotes de 128: guarda IDs, documentos, metadata y vectores.
+            # Sin embeddings explícitos, Chroma vectoriza los documentos al agregarlos.
             for start in range(0, len(ids), 128):
                 end = start + 128
                 extra = {"embeddings": self.embedding_function(embedding_texts[start:end])} if embedding_texts is not None else {}
@@ -122,14 +133,18 @@ class PlayerVectorStore:
                     "retrieval_time_ms": elapsed_ms(total_start), "query_executed": False}
         kwargs = {"where": where_filter} if where_filter else {}
         embedding_start = perf_counter_ns()
+        # Convierte la consulta en un vector con el mismo modelo de los documentos.
         query_embeddings = self.embedding_function([query_text.strip()])
         embedding_time_ms = elapsed_ms(embedding_start)
         query_start = perf_counter_ns()
+        # BÚSQUEDA EN CHROMA: envía el vector y los filtros, y pide hasta n_results
+        # vecinos con sus documentos, metadata y distancias.
         result = self.collection.query(
             query_embeddings=query_embeddings, n_results=min(n_results, count),
             include=["documents", "metadatas", "distances"], **kwargs,
         )
         execution_time_ms = elapsed_ms(query_start)
+        # Organiza cada candidato. Similitud = 1 - distancia; no es una probabilidad.
         candidates = [
             {"id": player_id, "document": document, "metadata": metadata,
              "distance": float(distance), "similarity": 1.0 - float(distance),
@@ -138,6 +153,8 @@ class PlayerVectorStore:
                 result["ids"][0], result["documents"][0],
                 result["metadatas"][0], result["distances"][0])
         ]
+        # Devuelve candidatos y tiempos separados: embedding, llamada a Chroma
+        # y recuperación completa. Estos tiempos no incluyen generación con un LLM.
         return {"candidates": candidates, "execution_time_ms": execution_time_ms,
                 "embedding_time_ms": embedding_time_ms,
                 "retrieval_time_ms": elapsed_ms(total_start), "query_executed": True}
