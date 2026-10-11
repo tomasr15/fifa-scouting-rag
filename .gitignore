@@ -15,6 +15,7 @@ data/supplied/raw/
 resultado*.json
 tmp/
 output/
+scripts/
 .chart-data-*/
 .claude/
 .mypy_cache/
