@@ -353,6 +353,13 @@ modelo remoto/local requiere validación manual con ese proveedor.
 
 La aplicación incluye **Exposición interactiva** en el menú lateral, con tres módulos locales de vectores y coseno, vecinos con filtros y recorrido HNSW. Esta sección funciona sin cargar el motor de búsqueda.
 
+## Evidencia citada en el informe
+
+- [Consulta registrada](evidencia/evidencia_busqueda.json): búsqueda «Delantero con regate y desborde» del 12/09/2026, sin LLM.
+- [Registro de pruebas](evidencia/evidencia_pruebas.txt): ejecución de 35 pruebas aprobadas el 12/09/2026.
+
+Estos archivos documentan esa ejecución puntual; no representan una prueba realizada al abrir el repositorio.
+
 ## Documentación oficial consultada
 
 - [Chroma: embeddings locales](https://docs.trychroma.com/docs/embeddings/embedding-functions)
