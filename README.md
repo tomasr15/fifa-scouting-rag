@@ -351,7 +351,7 @@ modelo remoto/local requiere validación manual con ese proveedor.
 
 ## Material para la exposición
 
-La aplicación incluye **Exposición interactiva** en el menú lateral, con tres módulos locales de vectores y coseno, vecinos con filtros y recorrido HNSW. Esta sección funciona sin cargar el motor de búsqueda. Los materiales para cinco integrantes, el PowerPoint, el PDF y el laboratorio sin conexión están en [output/presentacion/LEEME.md](output/presentacion/LEEME.md).
+La aplicación incluye **Exposición interactiva** en el menú lateral, con tres módulos locales de vectores y coseno, vecinos con filtros y recorrido HNSW. Esta sección funciona sin cargar el motor de búsqueda.
 
 ## Documentación oficial consultada
 

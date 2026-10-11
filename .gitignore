@@ -14,6 +14,7 @@ data/supplied/raw/
 *.zip
 resultado*.json
 tmp/
+output/
 .chart-data-*/
 .claude/
 .mypy_cache/
