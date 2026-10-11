@@ -15,3 +15,10 @@ data/supplied/raw/
 resultado*.json
 tmp/
 .chart-data-*/
+.claude/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.DS_Store
+Thumbs.db
